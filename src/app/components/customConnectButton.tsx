@@ -20,8 +20,7 @@ export const CustomConnectButton = () => {
                ready &&
                account &&
                chain &&
-               (!authenticationStatus ||
-                  authenticationStatus === 'authenticated')
+               (!authenticationStatus || authenticationStatus === 'authenticated')
             return (
                <div
                   {...(!ready && {

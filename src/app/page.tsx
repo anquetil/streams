@@ -1,9 +1,9 @@
-import AllStreams from "./components/allStreams";
+import AllStreams from './components/allStreams'
 
 export default function Home() {
    return (
-      <main className="flex min-h-screen flex-col">
-         <AllStreams/>
+      <main className='flex min-h-screen flex-col'>
+         <AllStreams />
       </main>
    )
 }

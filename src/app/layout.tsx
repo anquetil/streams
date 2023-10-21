@@ -8,7 +8,6 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { Providers } from './providers'
 
-
 export const berkeley = localFont({
    src: [
       {
@@ -37,22 +36,16 @@ export const berkeley = localFont({
 export const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: 'Streams',
-  description: 'See all Nouns DAO payment streams',
+   title: 'Streams',
+   description: 'See all Nouns DAO payment streams',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  return (
-    <html lang="en">
-        <body className={`${berkeley.className}`}>
-           <Providers>
-              {children}
-           </Providers>
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+   return (
+      <html lang='en'>
+         <body className={`${berkeley.className}`}>
+            <Providers>{children}</Providers>
          </body>
-    </html>
-  )
+      </html>
+   )
 }

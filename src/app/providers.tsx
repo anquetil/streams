@@ -7,7 +7,7 @@ import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
-import '@rainbow-me/rainbowkit/styles.css';
+import '@rainbow-me/rainbowkit/styles.css'
 
 const { chains, publicClient } = configureChains(
    [mainnet],
@@ -33,11 +33,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
    const [mounted, setMounted] = React.useState(false)
    React.useEffect(() => setMounted(true), [])
    return (
-         <WagmiConfig config={wagmiConfig}>
-            <RainbowKitProvider chains={chains} initialChain={mainnet}>
-               {mounted && children}
-               <Analytics />
-            </RainbowKitProvider>
-         </WagmiConfig>
+      <WagmiConfig config={wagmiConfig}>
+         <RainbowKitProvider chains={chains} initialChain={mainnet}>
+            {mounted && children}
+            <Analytics />
+         </RainbowKitProvider>
+      </WagmiConfig>
    )
 }
