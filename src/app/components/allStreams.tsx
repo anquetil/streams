@@ -46,7 +46,7 @@ export default async function AllStreams() {
 
    if (logs && logs.length > 0) {
       return (
-         <div className='px-12 py-6'>
+         <div className='px-4 md:px-12 py-6 '>
             <Header />
             <UserStreams logs={logs} />
             <div className='text-xl'>All Streams</div>
@@ -55,7 +55,7 @@ export default async function AllStreams() {
                <div className='w-32'>Amount</div>
                <div className='w-28'>Start Time</div>
                <div className='w-28'>End Time</div>
-               <div className='w-44'>Progress</div>
+               <div className='w-44 hidden lg:block'>Progress</div>
             </div>
             {logs.map((l, i) => {
                return <StreamRow key={i} log={l} user={false} />

@@ -105,7 +105,7 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
          <div className='w-32'>{`${streamAmount.toLocaleString('en-US')} ${token}`}</div>
          <div className='w-28'>{formatDate(new Date(log.startTime * 1000))}</div>
          <div className='w-28'>{formatDate(new Date(log.stopTime * 1000))}</div>
-         <div className='w-44'>{otherPString}</div>
+         <div className='w-44 hidden lg:block'>{otherPString}</div>
          {user && (
             <button
                className={`text-sm text-gray-800 rounded border border-gray-300 px-3 py-1 shadow-sm hover:shadow bg-white
