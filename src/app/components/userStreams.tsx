@@ -14,13 +14,15 @@ export default function UserStreams({ logs }: { logs: Log[] }) {
 
    return (
       <div className='flex flex-col gap-x-2 mb-6'>
-         <div className='text-xl'>My Streams</div>
-         <div className='flex flex-row gap-x-2 font-bold'>
-            <div className='w-32'>Amount</div>
-            <div className='w-28'>Start Time</div>
-            <div className='w-28'>End Time</div>
-            <div className='w-44'>Progress</div>
-         </div>
+         <div className='text-xl mb-1'>My Streams</div>
+         {isConnected && userLogs.length != 0 && (
+            <div className='flex flex-row gap-x-2 font-bold'>
+               <div className='w-32'>Amount</div>
+               <div className='w-28'>Start Time</div>
+               <div className='w-28'>End Time</div>
+               <div className='w-44'>Progress</div>
+            </div>
+         )}
          {isConnected ? (
             userLogs.length == 0 ? (
                <div className='text-gray-600'>No streams for this address.</div>
