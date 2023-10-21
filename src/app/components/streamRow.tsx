@@ -65,7 +65,7 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
       args: [withdrawable!],
    })
 
-   const { write, data: writeData } = useContractWrite(config)
+   const { write, data: writeData, isSuccess } = useContractWrite(config)
 
    const streamAmount = tokenAmount / 10 ** (token == 'USDC' ? 6 : 18)
    const remainingFormatted = data
@@ -116,6 +116,9 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
                {`Withdraw  Available (${withdrawableFormatted} ${token})`}
             </button>
          )}
+         {
+            isSuccess && <div className='rounded py-1 px-2 border border-green-400 bg-green-200 text-green-700'>Withdrawn! <Link className='underline' target='_blank' href={`https://etherscan.io/tx/${writeData?.hash}`}>Receipt</Link></div>
+         }
          <Link
             className='w-24 hover:underline text-gray-500'
             href={`https://etherscan.io/address/${stream}`}
