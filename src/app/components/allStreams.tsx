@@ -7,6 +7,7 @@ import StreamRow from './streamRow'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import UserStreams from './userStreams'
 import Header from './header'
+import { Log } from '../const/types'
 export const revalidate = 300 // revalidate the data at most every 5 minutes?
 
 const getData = cache(async () => {
@@ -41,13 +42,14 @@ const getData = cache(async () => {
 })
 
 export default async function AllStreams() {
-   let logs = await getData()
+   let logs: Log[] = await getData()
    logs = logs.sort((a, b) => (a.stopTime > b.stopTime ? 1 : -1))
 
    if (logs && logs.length > 0) {
       return (
          <div className='px-4 md:px-12 py-6 '>
             <Header />
+            <div className='block md:hidden bg-neutral-100 p-2 text-neutral-500 rounded text-sm mb-3 '>{`WIP! Streams.wtf isn't optimized for mobile yet`}</div>
             <UserStreams logs={logs} />
             <div className='text-xl'>All Streams</div>
             <div className='flex flex-row gap-x-2 font-bold'>
