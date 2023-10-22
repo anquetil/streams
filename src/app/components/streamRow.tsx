@@ -9,8 +9,9 @@ import {
    usePrepareContractWrite,
 } from 'wagmi'
 import { streamABI } from '../const/streamAbi'
-import { time } from 'console'
-import { Log } from '../const/types'
+import { Log, PropDatePropInfo } from '../const/types'
+import axios from 'axios'
+import useGetPropdateInfo from '../hooks/useGetPropdateInfo'
 
 function formatDate(d: Date): string {
    const day = d.getDate()
@@ -41,7 +42,7 @@ function formatDate(d: Date): string {
 }
 
 export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
-   const { stream, recipient, token, tokenAmount } = log
+   const { stream, recipient, token, tokenAmount, propID } = log
    const { data } = useContractReads({
       contracts: [
          {
@@ -66,6 +67,7 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
    })
 
    const { write, data: writeData, isSuccess } = useContractWrite(config)
+   const { prop: propdateData } = useGetPropdateInfo(propID, true)
 
    const streamAmount = tokenAmount / 10 ** (token == 'USDC' ? 6 : 18)
    const remainingFormatted = data
@@ -93,6 +95,7 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
 
    return (
       <div className='flex flex-row gap-x-2 items-center'>
+         <div className='w-12'>{propID}</div>
          {!user && (
             <Link
                className='w-44 hover:underline text-gray-500'
@@ -106,6 +109,17 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
          <div className='w-28'>{formatDate(new Date(log.startTime * 1000))}</div>
          <div className='w-28'>{formatDate(new Date(log.stopTime * 1000))}</div>
          <div className='w-44 hidden lg:block'>{otherPString}</div>
+         <div className='w-24 flex flex-row gap-x-1'>
+            <Link
+               href={`https://updates.wtf/prop/${propID}`}
+               target='_blank'
+               className='underline'
+            >
+               {`${propdateData ? propdateData.count : 0}`}
+            </Link>
+            <div> {propdateData && propdateData.isCompleted ? '✅' : '⏳'}</div>
+         </div>
+
          {user && (
             <button
                className={`text-sm text-gray-800 rounded border border-gray-300 px-3 py-1 shadow-sm hover:shadow bg-white
@@ -129,7 +143,7 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
             </div>
          )}
          <Link
-            className='w-24 hover:underline text-gray-500'
+            className='w-24 hover:underline text-gray-500 hidden lg:block'
             href={`https://etherscan.io/address/${stream}`}
             target='_blank'
          >

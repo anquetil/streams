@@ -1,13 +1,11 @@
 import Link from 'next/link'
 import { cache } from 'react'
 import { createPublicClient, decodeFunctionData, http, parseAbiItem } from 'viem'
-import { mainnet, useAccount } from 'wagmi'
-import useGetName from '../hooks/useGetName'
 import StreamRow from './streamRow'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import UserStreams from './userStreams'
 import Header from './header'
 import { Log } from '../const/types'
+import { mainnet } from 'viem/chains'
 export const revalidate = 300 // revalidate the data at most every 5 minutes?
 
 const getData = cache(async () => {
@@ -26,8 +24,18 @@ const getData = cache(async () => {
       ),
       fromBlock: BigInt(17212788),
    })
-   return logs.map((l) => {
-      return {
+
+   let propIDS = logs.map((l) =>
+      client.getLogs({
+         event: parseAbiItem('event ProposalExecuted(uint256 id)'),
+         blockHash: l.blockHash,
+      })
+   )
+
+   let returnLogs = []
+
+   for (const [i, l] of logs.entries()) {
+      returnLogs.push({
          recipient: l.args.recipient!,
          stream: l.args.streamAddress!,
          token:
@@ -37,27 +45,30 @@ const getData = cache(async () => {
          startTime: Number(l.args.startTime!),
          stopTime: Number(l.args.stopTime!),
          tokenAmount: Number(l.args.tokenAmount),
-      }
-   })
+         propID: Number((await propIDS[i])[0].args.id),
+      })
+   }
+   return returnLogs
 })
 
 export default async function AllStreams() {
    let logs: Log[] = await getData()
-   logs = logs.sort((a, b) => (a.stopTime > b.stopTime ? 1 : -1))
-
+   logs = logs.sort((a, b) => (a.propID > b.propID ? -1 : 1))
    if (logs && logs.length > 0) {
       return (
-         <div className='px-4 md:px-12 py-6 '>
+         <div className='px-4 md:pl-12 md:pr-4 py-6 '>
             <Header />
             <div className='block md:hidden bg-neutral-100 p-2 text-neutral-500 rounded text-sm mb-3 '>{`WIP! Streams.wtf isn't optimized for mobile yet`}</div>
             <UserStreams logs={logs} />
             <div className='text-xl'>All Streams</div>
             <div className='flex flex-row gap-x-2 font-bold'>
+               <div className='w-12'>Prop</div>
                <div className='w-44'>Recipient</div>
                <div className='w-32'>Amount</div>
                <div className='w-28'>Start Time</div>
                <div className='w-28'>End Time</div>
                <div className='w-44 hidden lg:block'>Progress</div>
+               <div className='w-24'>Propdates</div>
             </div>
             {logs.map((l, i) => {
                return <StreamRow key={i} log={l} user={false} />
