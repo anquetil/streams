@@ -6,7 +6,7 @@
       "dev": "next dev",
       "build": "npx prettier . --write && next build",
       "start": "next start",
-      "lint": "next lint"
+      "lint": "npx prettier . --write && next lint"
    },
    "dependencies": {
       "@apollo/client": "^3.8.6",

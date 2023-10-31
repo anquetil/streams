@@ -85,10 +85,16 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
       progressString += i < roundedRemaining ? '▓' : '░'
    }
 
-   const timePct =
+   let timePct =
       (new Date().getTime() - log.startTime * 1000) /
       (log.stopTime * 1000 - log.startTime * 1000)
-   let otherPString = timePct == 0 ? `100% \xa0` : `${(timePct * 100).toFixed(1)}% `
+   let otherPString =
+      timePct < 0
+         ? `0% \xa0`
+         : timePct > 1
+         ? `100% \xa0`
+         : `${(timePct * 100).toFixed(1)}% `
+
    for (let i = 0; i < 10; i++) {
       otherPString += i < timePct * 10 - 1 ? '▓' : '░'
    }

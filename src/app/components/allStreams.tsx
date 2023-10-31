@@ -9,6 +9,7 @@ import { mainnet } from 'viem/chains'
 export const revalidate = 300 // revalidate the data at most every 5 minutes?
 
 const getData = cache(async () => {
+   console.log('fetchin data from viem...')
    const client = createPublicClient({
       chain: mainnet,
       transport: http(
@@ -23,6 +24,7 @@ const getData = cache(async () => {
          'event StreamCreated(address indexed msgSender, address indexed payer, address indexed recipient, uint256 tokenAmount, address tokenAddress, uint256 startTime, uint256 stopTime, address streamAddress)'
       ),
       fromBlock: BigInt(17212788),
+      toBlock: BigInt(50000000),
    })
 
    let propIDS = logs.map((l) =>
