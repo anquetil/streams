@@ -36,7 +36,7 @@ export const berkeley = localFont({
 export const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-   title: 'Streams',
+   title: 'Payroll',
    description: 'See all Nouns DAO payment streams',
 }
 
