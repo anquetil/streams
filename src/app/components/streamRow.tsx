@@ -14,6 +14,11 @@ import axios from 'axios'
 import useGetPropdateInfo from '../hooks/useGetPropdateInfo'
 
 function formatDate(d: Date): string {
+   return d.toLocaleDateString(undefined, {
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit',
+   })
    const day = d.getDate()
    const month = d.getMonth()
    const year = d.getFullYear()
@@ -31,6 +36,7 @@ function formatDate(d: Date): string {
       'Nov',
       'Dec',
    ]
+   return month + 1 + '/' + day + '/' + year.toString().slice(-2)
    const formattedDay =
       day + (day % 10 == 1 ? 'st' : day % 10 == 2 ? 'nd' : day % 10 == 3 ? 'rd' : 'th')
    return (
@@ -70,20 +76,9 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
    const { prop: propdateData } = useGetPropdateInfo(propID, true)
 
    const streamAmount = tokenAmount / 10 ** (token == 'USDC' ? 6 : 18)
-   const remainingFormatted = data
-      ? Number(data[0].result) / 10 ** (token == 'USDC' ? 6 : 18)
-      : 0
    const withdrawableFormatted = !withdrawable
       ? 0
       : (Number(withdrawable) / 10 ** (token == 'USDC' ? 6 : 18)).toFixed(2)
-
-   const withdrawnPct = 1 - remainingFormatted / streamAmount
-   const roundedRemaining = Number(withdrawnPct.toFixed(1)) * 10
-   let progressString =
-      withdrawnPct == 0 ? `100% \xa0` : `${((1 - withdrawnPct) * 100).toFixed(1)}% `
-   for (let i = 0; i < 10; i++) {
-      progressString += i < roundedRemaining ? '▓' : '░'
-   }
 
    let timePct =
       (new Date().getTime() - log.startTime * 1000) /
@@ -92,15 +87,18 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
       timePct < 0
          ? `0% \xa0`
          : timePct > 1
-         ? `100% \xa0`
-         : `${(timePct * 100).toFixed(1)}% `
+         ? `100%`
+         : Number((timePct * 100).toFixed(0)) < 10
+         ? `${(timePct * 100).toFixed(0)}% \xa0`
+         : `${(timePct * 100).toFixed(0)}% `
 
+   otherPString += `\xa0`
    for (let i = 0; i < 10; i++) {
       otherPString += i < timePct * 10 - 1 ? '▓' : '░'
    }
 
    return (
-      <div className='flex flex-row gap-x-2 items-center'>
+      <div className='flex flex-row gap-x-2 items-center text-sm'>
          <div className='w-12'>{propID}</div>
          {!user && (
             <Link
@@ -111,7 +109,13 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
                {isLoading ? guarantee : name}
             </Link>
          )}
-         <div className='w-32'>{`${streamAmount.toLocaleString('en-US')} ${token}`}</div>
+         <Link
+            className='w-32 hover:underline text-gray-500'
+            href={`https://etherscan.io/address/${stream}`}
+            target='_blank'
+         >
+            {`${streamAmount.toLocaleString('en-US')} ${token}`}
+         </Link>
          <div className='w-28'>{formatDate(new Date(log.startTime * 1000))}</div>
          <div className='w-28'>{formatDate(new Date(log.stopTime * 1000))}</div>
          <div className='w-44 hidden lg:block'>{otherPString}</div>
@@ -119,7 +123,7 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
             <Link
                href={`https://updates.wtf/prop/${propID}`}
                target='_blank'
-               className='underline'
+               className='hover:underline text-gray-500'
             >
                {`${propdateData ? propdateData.count : 0}`}
             </Link>
@@ -128,7 +132,7 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
 
          {user && (
             <button
-               className={`text-sm text-gray-800 rounded border border-gray-300 px-3 py-1 shadow-sm hover:shadow bg-white
+               className={`text-sm text-gray-800 rounded border border-gray-300 px-3 py-1 shadow-sm hover:shadow hover:bg-gray-50 bg-white
                            ease-in-out transition-all active:mt-[2px] active:mb-[-2px]`}
                onClick={write}
                type='button'
@@ -148,13 +152,6 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
                </Link>
             </div>
          )}
-         <Link
-            className='w-24 hover:underline text-gray-500 hidden lg:block'
-            href={`https://etherscan.io/address/${stream}`}
-            target='_blank'
-         >
-            Contract
-         </Link>
       </div>
    )
 }

@@ -17,6 +17,7 @@ export default function UserStreams({ logs }: { logs: Log[] }) {
          <div className='text-xl mb-1'>My Streams</div>
          {isConnected && userLogs.length != 0 && (
             <div className='flex flex-row gap-x-2 font-bold'>
+               <div className='w-12'>Prop</div>
                <div className='w-32'>Amount</div>
                <div className='w-28'>Start Time</div>
                <div className='w-28'>End Time</div>
