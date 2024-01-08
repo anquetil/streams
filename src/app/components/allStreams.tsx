@@ -35,9 +35,6 @@ const getData = cache(async () => {
       })
       propIDs.push(id)
    }
-
-   console.log(propIDs.length)
-
    let returnLogs = []
 
    for (const [i, l] of logs.entries()) {

@@ -86,7 +86,7 @@ export default function StreamRow({ user, log }: { user: boolean; log: Log }) {
    let otherPString =
       timePct < 0
          ? `0% \xa0`
-         : timePct > 1
+         : timePct >= 0.994
          ? `100%`
          : Number((timePct * 100).toFixed(0)) < 10
          ? `${(timePct * 100).toFixed(0)}% \xa0`
