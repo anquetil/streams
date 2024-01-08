@@ -24,15 +24,19 @@ const getData = cache(async () => {
          'event StreamCreated(address indexed msgSender, address indexed payer, address indexed recipient, uint256 tokenAmount, address tokenAddress, uint256 startTime, uint256 stopTime, address streamAddress)'
       ),
       fromBlock: BigInt(17212788),
-      toBlock: BigInt(50000000),
+      toBlock: 'latest',
    })
 
-   let propIDS = logs.map((l) =>
-      client.getLogs({
+   let propIDs = []
+   for(const log of logs){
+      const id = await client.getLogs({
          event: parseAbiItem('event ProposalExecuted(uint256 id)'),
-         blockHash: l.blockHash,
+         blockHash: log.blockHash,
       })
-   )
+      propIDs.push(id)
+   }
+
+   console.log(propIDs.length)
 
    let returnLogs = []
 
@@ -47,7 +51,7 @@ const getData = cache(async () => {
          startTime: Number(l.args.startTime!),
          stopTime: Number(l.args.stopTime!),
          tokenAmount: Number(l.args.tokenAmount),
-         propID: Number((await propIDS[i])[0].args.id),
+         propID: Number((propIDs[i])[0].args.id),
       })
    }
    return returnLogs
